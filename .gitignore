@@ -1,0 +1,30 @@
+# Build outputs
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Bb]uild/
+
+# Visual Studio working files
+.vs/
+*.user
+*.suo
+
+# Visual Studio compilation files
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.exp
+*.lib
+*.exe
+*.dll
+
+# Auto-generated
+ipch/
+*.aps
+*.ncb
+*.opensdf
+*.sdf
+*.cachefile
