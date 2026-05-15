@@ -1,0 +1,18 @@
+Camera Calibration Results
+==========================
+
+Image size: 640 x 480 pixels
+Number of images used: 13
+RMS reprojection error: 0.4087 pixels
+
+Intrinsic parameters:
+  Focal length (x): 536.0735 pixels
+  Focal length (y): 536.0164 pixels
+  Principal point:  (342.3705, 235.5369)
+
+Distortion coefficients:
+  k1: -0.2651
+  k2: -0.0467
+  p1: 0.0018
+  p2: -0.0003
+  k3: 0.2523
