@@ -5,12 +5,14 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <iomanip>
 
 #include <opencv2/calib3d.hpp>
 
 #include "config.h"
 #include "types.h"
 #include "geometry.h"
+#include "calibration.h"
 
 
 
@@ -107,6 +109,47 @@ int main() {
                 break;  // just check the first observation
             }
         }
+
+        // Run calibration
+        auto result = calibration::runCalibration(iops, flags, cfg, eops, gcps, obs);
+
+        // Print results
+        std::cout << "\n=== Calibration Results ===\n";
+        std::cout << "RMS reprojection error: " << result.rms_reprojection_error << " px\n";
+        std::cout << "\nCalibrated IOPs:\n";
+        std::cout << "  fx = " << result.calibrated_iops.fx << "\n";
+        std::cout << "  fy = " << result.calibrated_iops.fy << "\n";
+        std::cout << "  cx = " << result.calibrated_iops.cx << "\n";
+        std::cout << "  cy = " << result.calibrated_iops.cy << "\n";
+        std::cout << "  k1 = " << result.calibrated_iops.k1 << "\n";
+        std::cout << "  k2 = " << result.calibrated_iops.k2 << "\n";
+        std::cout << "  k3 = " << result.calibrated_iops.k3 << "\n";
+        std::cout << "  p1 = " << result.calibrated_iops.p1 << "\n";
+        std::cout << "  p2 = " << result.calibrated_iops.p2 << "\n";
+
+        // Print comparison to FEMBUN reference values
+        std::cout << "\n=== Comparison to FEMBUN Reference Calibration ===\n";
+        std::cout << std::fixed;
+        std::cout << "Parameter |  FEMBUN      |  OpenCV      |  Diff        |  Rel diff (%)\n";
+        std::cout << "----------|--------------|--------------|--------------|---------------\n";
+
+        auto printRow = [](const std::string& name, double fembun, double opencv) {
+            double diff = opencv - fembun;
+            double rel_diff = (fembun != 0.0) ? (diff / fembun) * 100.0 : 0.0;
+            std::cout << "  " << std::left << std::setw(8) << name
+                << "|  " << std::setw(12) << std::setprecision(4) << fembun
+                << "|  " << std::setw(12) << std::setprecision(4) << opencv
+                << "|  " << std::setw(12) << std::setprecision(4) << diff
+                << "|  " << std::setprecision(2) << rel_diff << "\n";
+            };
+
+        const auto& r = result.calibrated_iops;
+        printRow("fx", 3020.6737, r.fx);
+        printRow("cx", 2030.7731, r.cx);
+        printRow("cy", 1512.2849, r.cy);
+        printRow("k1", 0.09771, r.k1);
+        printRow("k2", -0.18865, r.k2);
+        printRow("k3", 0.11160, r.k3);
 
         return 0;
 
