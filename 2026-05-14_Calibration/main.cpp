@@ -6,8 +6,13 @@
 #include <stdexcept>
 #include <string>
 
+#include <opencv2/calib3d.hpp>
+
 #include "config.h"
 #include "types.h"
+#include "geometry.h"
+
+
 
 int main() {
     try {
@@ -53,7 +58,58 @@ int main() {
                 << " x=" << o.x << " y=" << o.y << "\n";
         }
 
+        // Test FEMBUN -> OpenCV pose conversion
+        if (!eops.empty()) {
+            cv::Mat rvec, tvec;
+            geometry::eopToOpenCVPose(eops.front(), rvec, tvec);
+
+            std::cout << "\nFirst pose in OpenCV form:\n";
+            std::cout << "rvec: " << rvec.t() << "\n";
+            std::cout << "tvec: " << tvec.t() << "\n";
+        }
+
+        // Project a known GCP using the converted pose and compare to observation
+        if (!eops.empty() && !gcps.empty() && !obs.empty()) {
+            cv::Mat rvec, tvec;
+            geometry::eopToOpenCVPose(eops.front(), rvec, tvec);
+
+            // Build camera matrix from IOPs
+            cv::Mat cameraMatrix = (cv::Mat_<double>(3, 3) <<
+                iops.fx, 0.0, iops.cx,
+                0.0, iops.fy, iops.cy,
+                0.0, 0.0, 1.0);
+
+            // Distortion coefficients (zero for the initial estimate)
+            cv::Mat distCoeffs = cv::Mat::zeros(5, 1, CV_64F);
+
+            // Find an observation in the first image that we have a GCP for
+            const std::string& target_image = eops.front().image_name;
+            for (const auto& observation : obs) {
+                if (observation.image_name != target_image) continue;
+
+                // Find the matching GCP
+                for (const auto& gcp : gcps) {
+                    if (gcp.point_id != observation.point_id) continue;
+
+                    // Project the GCP
+                    std::vector<cv::Point3d> object_points = { cv::Point3d(gcp.X, gcp.Y, gcp.Z) };
+                    std::vector<cv::Point2d> projected_points;
+                    cv::projectPoints(object_points, rvec, tvec, cameraMatrix, distCoeffs, projected_points);
+
+                    std::cout << "\nProjection check for image " << target_image
+                        << ", point " << gcp.point_id << ":\n";
+                    std::cout << "  Observed:  (" << observation.x << ", " << observation.y << ")\n";
+                    std::cout << "  Projected: (" << projected_points[0].x << ", " << projected_points[0].y << ")\n";
+                    std::cout << "  Residual:  (" << projected_points[0].x - observation.x
+                        << ", " << projected_points[0].y - observation.y << ")\n";
+                    break;  // just check the first match
+                }
+                break;  // just check the first observation
+            }
+        }
+
         return 0;
+
     }
     catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
