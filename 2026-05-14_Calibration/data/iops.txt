@@ -1,0 +1,39 @@
+# Interior Orientation Parameters (IOPs)
+# Values in pixel units (OpenCV convention)
+# Initial estimates used as starting point for calibration
+# Aspect ratio fixed: fx = fy enforced via additional_parameters.txt
+
+# Focal length (pixels)
+fx = 3029.000
+fy = 3029.000
+
+# Principal point (pixels, absolute image coordinates)
+cx = 2016.000
+cy = 1512.000
+
+# Radial distortion coefficients
+k1 = 0.0
+k2 = 0.0
+k3 = 0.0
+k4 = 0.0
+k5 = 0.0
+k6 = 0.0
+
+# Tangential (decentering) distortion coefficients
+p1 = 0.0
+p2 = 0.0
+
+# Thin prism distortion coefficients
+s1 = 0.0
+s2 = 0.0
+s3 = 0.0
+s4 = 0.0
+
+# Tilted sensor model coefficients
+taux = 0.0
+tauy = 0.0
+
+
+
+
+

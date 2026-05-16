@@ -1,0 +1,48 @@
+# Additional Parameters (AP) configuration
+# Controls which OpenCV calibration flags are set
+# Each entry maps to a CALIB_* flag (or combination) in OpenCV
+
+# Distortion model selection
+use_rational_model = false       # enables k4, k5, k6
+use_thin_prism_model = false     # enables s1, s2, s3, s4
+use_tilted_model = false         # enables taux, tauy
+
+# Fixing intrinsics
+fix_aspect_ratio = true          # enforces fx = fy (FEMBUN parity)
+fix_focal_length = false         # holds fx, fy at initial values
+fix_principal_point = false      # holds cx, cy at initial values
+
+# Fixing distortion coefficients
+fix_k1 = false
+fix_k2 = false
+fix_k3 = false
+zero_tangent_dist = true         # forces p1 = p2 = 0
+
+
+# Initial guess behaviour
+use_intrinsic_guess = true       # use values from iops.txt as starting point
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

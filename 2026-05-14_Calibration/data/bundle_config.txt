@@ -1,0 +1,26 @@
+# Bundle adjustment configuration
+# General settings for the calibration run
+
+# Image dimensions (pixels)
+image_width = 4032
+image_height = 3024
+
+# Termination criteria
+max_iterations = 30              # OpenCV default
+epsilon = 1e-8
+
+# Output verbosity
+verbose = true                   # print iteration progress to console
+print_summary = true             # print final calibration summary
+
+
+
+
+
+
+
+
+
+
+
+
